@@ -3,6 +3,8 @@ A simple 1v1 TicTacToe Spigot/Bukkit plugin for Minecraft, using ItemFrames.
 
 Built for 1.16.4, but I would expect many versions to work with it (older and newer).
 
+Compiled for Java 8.
+
 Download here:
 https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 
