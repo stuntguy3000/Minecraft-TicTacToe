@@ -1,0 +1,8 @@
+name: ${project.name}
+version: ${project.version}
+main: com.stuntguy3000.minecraft.tictactoe.PluginMain
+authors: [ stuntguy3000 ]
+api-version: 1.16
+commands:
+  tictactoe:
+    aliases: [ ttt ]
