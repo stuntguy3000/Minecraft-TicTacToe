@@ -6,6 +6,8 @@ Built for 1.16.4, but I would expect many versions to work with it (older and ne
 Download here:
 https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 
+### Please note: I will not be actively maintaining this plugin, but if you find a bug or want to request a feature, leave an issue or contact me on Discord (stuntguy3000#1337)
+
 ## Key Features:
  - 1v1 Mode
  - Block/Environment Protection to prevent accidental damage to the board
