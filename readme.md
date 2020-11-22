@@ -6,6 +6,14 @@ Built for 1.16.4, but I would expect many versions to work with it (older and ne
 Download here:
 https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 
+## Key Features:
+ - 1v1 Mode
+ - Block/Environment Protection to prevent accidental damage to the board
+ - Simple and intuitive game user interface for quick operation
+ - Plugin configuration settings
+ - Configurable Walk-away & disconnection protection (remove the player from a game if they physically walk away from the board, or quit the server)
+ 
+
 ## Pictures
 ![Command Help](https://i.imgur.com/WndxIEu.jpg)
 
