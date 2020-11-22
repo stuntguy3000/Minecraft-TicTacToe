@@ -44,4 +44,4 @@ https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 
 ``/tictactoe board remove [id]`` - Removes a board (either at location or by specifying an id)
 
-``/tictactoe board create`` - Creates a boards
+``/tictactoe board create`` - Creates a board
