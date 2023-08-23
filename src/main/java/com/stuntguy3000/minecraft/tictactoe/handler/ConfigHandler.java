@@ -27,8 +27,8 @@ package com.stuntguy3000.minecraft.tictactoe.handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stuntguy3000.minecraft.tictactoe.PluginMain;
-import com.stuntguy3000.minecraft.tictactoe.core.plugin.PluginConfig;
 import com.stuntguy3000.minecraft.tictactoe.core.plugin.MinecraftPlugin;
+import com.stuntguy3000.minecraft.tictactoe.core.plugin.PluginConfig;
 import lombok.Getter;
 
 import java.io.*;
@@ -97,6 +97,7 @@ public class ConfigHandler {
 
     /**
      * Returns a PluginConfig by it's name
+     *
      * @param name String the name of the PluginConfig
      * @return PluginConfig the associated object, or null if not found
      */

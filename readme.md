@@ -1,9 +1,10 @@
 # TicTacToe
+
 A simple 1v1 TicTacToe Spigot/Bukkit plugin for Minecraft, using ItemFrames.
 
-Built for 1.16.4, but I would expect many versions to work with it (older and newer).
+Built for 1.16.4, but I would expect many versions to work with it going forward.
 
-Compiled for Java 8.
+Compiled for Java 17. Plugin version 1.1 has Java 7 support (Compiled for MineCraft 1.16.4)
 
 Download here:
 https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
@@ -11,14 +12,16 @@ https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 ### Please note: I will not be actively maintaining this plugin, but if you find a bug or want to request a feature, leave an issue or contact me on Discord (stuntguy3000#1337)
 
 ## Key Features:
- - 1v1 Mode
- - Block/Environment Protection to prevent accidental damage to the board
- - Simple and intuitive game user interface for quick operation
- - Plugin configuration settings
- - Configurable Walk-away & disconnection protection (remove the player from a game if they physically walk away from the board, or quit the server)
- 
+
+- 1v1 Mode
+- Block/Environment Protection to prevent accidental damage to the board
+- Simple and intuitive game user interface for quick operation
+- Plugin configuration settings
+- Configurable Walk-away & disconnection protection (remove the player from a game if they physically walk away from the
+  board, or quit the server)
 
 ## Pictures
+
 ![Command Help](https://i.imgur.com/WndxIEu.jpg)
 
 ![Join Game Display](https://i.imgur.com/SBCnf1m.jpg)
@@ -30,6 +33,7 @@ https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 ![Win Animation](https://i.imgur.com/3XPYlAg.gif)
 
 ## Commands
+
 **All Players:**
 
 ``/tictactoe board`` - Access board specific commands
@@ -49,3 +53,5 @@ https://github.com/stuntguy3000/Minecraft-TicTacToe/releases
 ``/tictactoe board remove [id]`` - Removes a board (either at location or by specifying an id)
 
 ``/tictactoe board create`` - Creates a board
+
+``/tictactoe board cancel`` - Cancels board creation

@@ -32,25 +32,24 @@ import com.stuntguy3000.minecraft.tictactoe.handler.BoardHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 
 /**
- * Handles player block events.
+ * Handles events relating to board protection.
  */
 @Data
 @AllArgsConstructor
-public class PlayerBlockEvents implements Listener {
+public class BoardProtectionEvents implements Listener {
     private final PluginMain plugin;
-
-    public PlayerBlockEvents() {
-        this.plugin = PluginMain.getInstance();
-    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
@@ -76,18 +75,77 @@ public class PlayerBlockEvents implements Listener {
         // Try to locate any boards attached to this block
         BoardHandler boardHandler = plugin.getBoardHandler();
 
-        Block northBlock = block.getRelative(BlockFace.NORTH);
-        Board northBoard = boardHandler.getBoardAtBlockLocation(new WorldVector(northBlock.getLocation()));
-        Block southBlock = block.getRelative(BlockFace.SOUTH);
-        Board southBoard = boardHandler.getBoardAtBlockLocation(new WorldVector(southBlock.getLocation()));
-        Block westBlock = block.getRelative(BlockFace.WEST);
-        Board westBoard = boardHandler.getBoardAtBlockLocation(new WorldVector(westBlock.getLocation()));
-        Block eastBlock = block.getRelative(BlockFace.EAST);
-        Board eastBoard = boardHandler.getBoardAtBlockLocation(new WorldVector(eastBlock.getLocation()));
-
-        if (northBoard != null || southBoard != null || westBoard != null || eastBoard != null) {
+        if (boardHandler.isBoardBlock(block)) {
             event.setCancelled(true);
             Lang.sendMessage(player, Lang.ERROR_BLOCK_BREAK_EVENT_DENY);
+        }
+    }
+
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        BoardHandler boardHandler = plugin.getBoardHandler();
+
+        event.blockList().removeIf(boardHandler::isBoardBlock); // Lambda is awesome!
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        BoardHandler boardHandler = plugin.getBoardHandler();
+
+        event.blockList().removeIf(boardHandler::isBoardBlock); // Lambda is awesome!
+    }
+
+    @EventHandler
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        BoardHandler boardHandler = plugin.getBoardHandler();
+
+        for (Block eventBlock : event.getBlocks()) {
+            if (boardHandler.isBoardBlock(eventBlock)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        BoardHandler boardHandler = plugin.getBoardHandler();
+
+        for (Block eventBlock : event.getBlocks()) {
+            if (boardHandler.isBoardBlock(eventBlock)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onHangingBreak(HangingBreakEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof ItemFrame) {
+            // Is this a board item?
+            Block block = entity.getLocation().getBlock();
+            Board board = plugin.getBoardHandler().getBoardAtBlockLocation(new WorldVector(block.getLocation()));
+
+            if (board != null) {
+                // Cancel the event
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof ItemFrame) {
+            // Is this a board item?
+            Block block = entity.getLocation().getBlock();
+            Board board = plugin.getBoardHandler().getBoardAtBlockLocation(new WorldVector(block.getLocation()));
+
+            if (board != null) {
+                // Cancel the event
+                event.setCancelled(true);
+            }
         }
     }
 }

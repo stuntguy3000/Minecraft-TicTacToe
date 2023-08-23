@@ -28,11 +28,11 @@ public class ArrayUtil {
 
     /**
      * Tests if all elements in an array are identical
-     *
+     * <p>
      * Adapted from https://stackoverflow.com/questions/21170608/in-java-how-can-i-test-if-an-array-contains-the-same-value
      *
      * @param acceptNull boolean true to accept null objects for comparison, false to instant-reject the array
-     * @param array array the input array
+     * @param array      array the input array
      * @return true if identical
      */
     public static boolean testIfElementsIdentical(boolean acceptNull, Object... array) {

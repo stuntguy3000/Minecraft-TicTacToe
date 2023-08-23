@@ -51,8 +51,8 @@ public class Board {
 
     /**
      * Returns the BoardItem object located at boardPosition
-     * @param boardPosition the position of the board item
      *
+     * @param boardPosition the position of the board item
      * @return the BoardItem located at boardPosition (or null)
      */
     public BoardItem getBoardItem(BoardPosition boardPosition) {
@@ -278,7 +278,7 @@ public class Board {
     }
 
     /**
-     * Performs checks of the item frame entities to determine if the grid pattern is in tact and is ready to be used to
+     * Performs checks of the item frame entities to determine if the grid pattern is intact and is ready to be used to
      * play
      * <p>
      * Invalid states are - Any board item that is missing - Any board item that contains any UNEXPECTED items (non-game
@@ -304,13 +304,9 @@ public class Board {
 
         // Check if any other boards exist at this location
         BoardHandler boardHandler = PluginMain.getInstance().getBoardHandler();
-        Board otherBoard = boardHandler.getBoardAtBlockLocation(getCenterVector());
+        Board otherBoard = boardHandler.getBoardAtBlockLocation(getCenterVector().getBlockLocationVector());
 
-        if (otherBoard != null && otherBoard != this) {
-            return false;
-        }
-
-        return true;
+        return otherBoard == null || otherBoard == this;
     }
 
     /**
@@ -324,14 +320,12 @@ public class Board {
         Objects.requireNonNull(location.getWorld()).playSound(location, sound, SoundCategory.NEUTRAL, 1, pitch);
     }
 
-
-
     /**
      * Puts an ItemStack in an ItemFrame on the board
      *
-     * @param position BoardPosition the position to fill
+     * @param position      BoardPosition the position to fill
      * @param doDisplayName boolean true to enable the display the name of the item on the board (on player hover)
-     * @param item ItemStack the item to display
+     * @param item          ItemStack the item to display
      */
     private void setBoardItem(BoardPosition position, boolean doDisplayName, ItemStack item) {
         ItemFrame itemFrame = getBoardItem(position).getItemFrame();
@@ -355,7 +349,7 @@ public class Board {
     /**
      * Fill all items in the board
      *
-     * @param item ItemStack the item to display
+     * @param item          ItemStack the item to display
      * @param doDisplayName boolean true to enable the display the name of the item on the board (on player hover)
      */
     public void fillBoardItems(ItemStack item, boolean doDisplayName) {

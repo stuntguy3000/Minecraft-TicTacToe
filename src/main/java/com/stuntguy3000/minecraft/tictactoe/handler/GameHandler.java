@@ -78,6 +78,7 @@ public class GameHandler {
 
     /**
      * Generates a game for a specific @{see Board}
+     *
      * @param board Board the board to create a game for.
      */
     public void generateGame(Board board) {
@@ -91,6 +92,7 @@ public class GameHandler {
 
     /**
      * Returns the Game a player is in.
+     *
      * @param player Player the player to lookup.
      * @return Game the current game the player is in, null if not found.
      */
@@ -103,8 +105,10 @@ public class GameHandler {
 
         return null;
     }
+
     /**
      * Returns the Game associated with a specific Board
+     *
      * @param board Board the board to lookup with
      * @return Game the game associated with the Board, null if not found/
      */
@@ -120,12 +124,17 @@ public class GameHandler {
 
     /**
      * Try to add a player into a game
+     *
      * @param player Player the targeted player
-     * @param game Game the game to add the player into
+     * @param game   Game the game to add the player into
      * @return boolean true if successful
      */
     public boolean tryAddToGame(Player player, Game game) {
         if (player == null) {
+            return false;
+        }
+
+        if (game.getGamestate() != Gamestate.WAITING) {
             return false;
         }
 

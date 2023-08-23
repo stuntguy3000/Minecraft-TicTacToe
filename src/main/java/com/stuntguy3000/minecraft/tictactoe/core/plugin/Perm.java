@@ -36,8 +36,7 @@ public class Perm {
      * Test if CommandSender has a specific permission, if not, send an error.
      *
      * @param commandSender CommandSender the entity to test against
-     * @param perm String the permission string to test
-     *
+     * @param perm          String the permission string to test
      * @return true if commandSender has permission
      */
     public static boolean tryPerm(CommandSender commandSender, String perm) {

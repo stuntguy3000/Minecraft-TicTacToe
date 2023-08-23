@@ -32,7 +32,7 @@ import java.util.logging.Level;
 
 /**
  * Represents a Minecraft Plugin
- *
+ * <p>
  * This is an abstraction layer that sits in the middle between Bukkit and the Plugin to help simplify development
  */
 public abstract class MinecraftPlugin extends JavaPlugin {
@@ -40,14 +40,17 @@ public abstract class MinecraftPlugin extends JavaPlugin {
      * Register all defined handlers
      */
     public abstract void registerHandlers();
+
     /**
      * Register all defined commands
      */
     public abstract void registerCommands();
+
     /**
      * Register all defined event handlers
      */
     public abstract void registerEvents();
+
     /**
      * Set the instance of the plugin's main class object
      */

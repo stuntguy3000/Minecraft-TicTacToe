@@ -48,7 +48,8 @@ public class ActionBarUtil implements Listener {
 
     /**
      * Send a single action bar message to Player
-     * @param player Player the targeted player
+     *
+     * @param player  Player the targeted player
      * @param message String the message to send
      */
     public void sendActionBarMessage(Player player, String message) {
@@ -58,9 +59,11 @@ public class ActionBarUtil implements Listener {
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }
+
     /**
      * Send a sticky action bar message to Player (one that does not disappear)
-     * @param player Player the targeted player
+     *
+     * @param player  Player the targeted player
      * @param message String the message to send
      */
     public void sendStickyActionBarMessage(final Player player, final String message) {
@@ -95,6 +98,7 @@ public class ActionBarUtil implements Listener {
 
     /**
      * Clear the current/sticky action bar message for a Player
+     *
      * @param player Player the targeted player
      */
     public void clearActionBarMessage(Player player) {

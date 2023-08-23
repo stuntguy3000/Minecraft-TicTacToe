@@ -93,7 +93,6 @@ public class MenuHandler {
 
                         // Show success feedback
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 2);
-                        Lang.sendMessage(player, Lang.SUCCESS_COLOUR_SELECTED);
                     }
 
                     // Wrap it up!

@@ -37,8 +37,12 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,7 +52,7 @@ import java.util.UUID;
  */
 @Data
 @AllArgsConstructor
-public class TicTacToeCommand implements CommandExecutor {
+public class TicTacToeCommand implements CommandExecutor, TabExecutor {
     private PluginMain pluginMain;
 
     @Override
@@ -66,6 +70,7 @@ public class TicTacToeCommand implements CommandExecutor {
                     Lang.sendMessage(sender, Lang.COMMAND_HELP_ENTRY, label, "board list", "View a list of known boards");
                     Lang.sendMessage(sender, Lang.COMMAND_HELP_ENTRY, label, "board remove [id]", "Removes a board (either at location or by specifying an id)");
                     Lang.sendMessage(sender, Lang.COMMAND_HELP_ENTRY, label, "board create", "Creates a board");
+                    Lang.sendMessage(sender, Lang.COMMAND_HELP_ENTRY, label, "board cancel", "Cancel board creation");
                     return true;
                 } else if (args[0].equalsIgnoreCase("leave")) {
                     if (isPlayer(sender)) {
@@ -89,16 +94,15 @@ public class TicTacToeCommand implements CommandExecutor {
                     if (args[1].equalsIgnoreCase("create")) {
                         if (isPlayer(sender)) {
                             Player player = (Player) sender;
-
                             UUID id = player.getUniqueId();
-                            if (boardHandler.isBoardCreator(id)) {
-                                // Cancel process
-                                boardHandler.removeBoardCreator(id);
 
-                                player.sendMessage("");
-                                Lang.sendMessage(sender, Lang.COMMAND_BOARD_CREATE_CANCEL);
-                                player.sendMessage("");
-                            } else {
+                            // Is the player not in a game?
+                            if (pluginMain.getGameHandler().getGameForPlayer(player) != null) {
+                                return true;
+                            }
+
+                            // Is the player not a Board Creator?
+                            if (!boardHandler.isBoardCreator(id)) {
                                 // Start process
                                 boardHandler.addBoardCreator(id);
 
@@ -108,6 +112,24 @@ public class TicTacToeCommand implements CommandExecutor {
                                 player.sendMessage("");
                             }
                         }
+
+                        return true;
+                    } else if (args[1].equalsIgnoreCase("cancel")) {
+                        if (isPlayer(sender)) {
+                            Player player = (Player) sender;
+                            UUID id = player.getUniqueId();
+
+                            if (boardHandler.isBoardCreator(id)) {
+                                // Cancel process
+                                boardHandler.removeBoardCreator(id);
+
+                                player.sendMessage("");
+                                Lang.sendMessage(sender, Lang.COMMAND_BOARD_CREATE_CANCEL);
+                                player.sendMessage("");
+                            }
+                        }
+
+                        return true;
                     } else if (args[1].equalsIgnoreCase("list")) {
                         // Process a board list command
                         Lang.sendMessage(sender, Lang.COMMAND_BOARD_LIST_TITLE, boardHandler.getBoards().values().size());
@@ -116,6 +138,8 @@ public class TicTacToeCommand implements CommandExecutor {
                             Location location = board.getCenterVector().getBlockLocation();
                             Lang.sendMessage(sender, Lang.COMMAND_BOARD_LIST_VALUE, location.getBlockX(), location.getBlockY(), location.getBlockZ(), board.getId());
                         }
+
+                        return true;
                     } else if (args[1].equalsIgnoreCase("remove")) {
                         // Process a board remove command
                         // This variant has does not have a third argument, so we will try to find the nearest one
@@ -130,9 +154,10 @@ public class TicTacToeCommand implements CommandExecutor {
                                 Lang.sendMessage(sender, Lang.SUCCESS_BOARD_REMOVE_SUCCESS);
                             }
                         }
+                        return true;
                     }
-                    return true;
                 }
+                break;
             }
             case 3: {
                 // Board Command
@@ -156,9 +181,10 @@ public class TicTacToeCommand implements CommandExecutor {
                             boardHandler.destroyBoard(board);
                             Lang.sendMessage(sender, Lang.SUCCESS_BOARD_REMOVE_SUCCESS);
                         }
+                        return true;
                     }
                 }
-                return true;
+                break;
             }
         }
 
@@ -184,5 +210,40 @@ public class TicTacToeCommand implements CommandExecutor {
         }
 
         return player;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        System.out.println(Arrays.toString(args));
+        System.out.println(args.length);
+
+        if (sender instanceof Player) {
+            switch (args.length) {
+                case 1: {
+                    List<String> commands = new ArrayList<>();
+
+                    commands.add("leave");
+                    commands.add("version");
+                    commands.add("help");
+
+                    if (Perm.tryPerm(sender, Perm.COMMAND_ADMIN)) {
+                        commands.add("board");
+                    }
+
+                    return commands;
+                }
+                case 2: {
+                    String subcommand = args[0];
+
+                    if (subcommand.equalsIgnoreCase("board")) {
+                        return Arrays.asList("create", "cancel", "list", "remove");
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return null;
     }
 }

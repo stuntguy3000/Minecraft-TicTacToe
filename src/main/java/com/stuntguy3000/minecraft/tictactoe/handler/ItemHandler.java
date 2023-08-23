@@ -51,8 +51,10 @@ public class ItemHandler {
     private static final ItemStack ITEM_PLAYER_BLUE = new ItemBuilder().material(Material.BLUE_WOOL).displayLore(ITEM_TAG_LIST).getItem();
 
     // Could use NBT?
+
     /**
      * Checks if a item is tagged with ITEM_TAG_STRING (determing it to be a game item).
+     *
      * @param itemStack ItemStack the item to be checked
      * @return boolean true if itemStack is known to be a game item
      */
@@ -72,6 +74,7 @@ public class ItemHandler {
 
     /**
      * Returns a list of all available player items
+     *
      * @return List a list of available player items
      */
     public static List<ItemStack> getAllPlayerItems() {

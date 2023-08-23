@@ -30,6 +30,10 @@ import com.stuntguy3000.minecraft.tictactoe.core.plugin.config.BoardsConfig;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -62,10 +66,10 @@ public class BoardHandler {
     /**
      * Returns a Board that is at an exact BlockLocation
      *
-     * @param locationVector locationVector the BlockLocation to check for a Board.
+     * @param blockLocation locationVector the BlockLocation to check for a Board.
      * @return Board the associated Board, or null if not found.
      */
-    public Board getBoardAtBlockLocation(WorldVector locationVector) {
+    public Board getBoardAtBlockLocation(WorldVector blockLocation) {
         for (Board board : boards.values()) {
             for (BoardPosition itemPosition : BoardPosition.values()) {
                 BoardItem boardItem = board.getBoardItem(itemPosition);
@@ -73,7 +77,7 @@ public class BoardHandler {
                 if (boardItem != null) {
                     WorldVector boardItemBlockVector = boardItem.getLocation().getBlockLocationVector();
 
-                    if (boardItemBlockVector.equals(locationVector)) {
+                    if (boardItemBlockVector.equals(blockLocation)) {
                         return board;
                     }
                 }
@@ -82,11 +86,12 @@ public class BoardHandler {
 
         return null;
     }
+
     /**
      * Returns a Board that is at an exact BlockLocation
      *
      * @param searchLocation Location the BlockLocation to check for a Board.
-     * @param maxDistance double the maximum distance searchLocation can be away from the center of a Board
+     * @param maxDistance    double the maximum distance searchLocation can be away from the center of a Board
      * @return Board the associated Board, or null if not found.
      */
     public Board getBoardClosestToLocation(Location searchLocation, double maxDistance) {
@@ -213,6 +218,7 @@ public class BoardHandler {
 
     /**
      * Adds a board creator to the boardCreator tracker map
+     *
      * @param id UUID the id of the player who is creating a board
      */
     public void addBoardCreator(UUID id) {
@@ -231,9 +237,31 @@ public class BoardHandler {
 
     /**
      * Removes a board creator from boardCreator tracker map
+     *
      * @param id UUID the id of the player who is creating a board
      */
     public void removeBoardCreator(UUID id) {
         boardCreators.remove(id);
+    }
+
+    public boolean isBoardBlock(Block originalBlock) {
+        Collection<Entity> entities = originalBlock.getWorld().getNearbyEntities(originalBlock.getLocation(), 2, 2, 2, entity -> entity instanceof ItemFrame);
+
+        for (Entity entity : entities) {
+            if (entity instanceof ItemFrame) {
+                ItemFrame itemFrame = (ItemFrame) entity;
+                BlockFace attachedFace = itemFrame.getAttachedFace();
+                Block attachedBlock = itemFrame.getLocation().getBlock().getRelative(attachedFace);
+
+                // Is this itemFrame attached to this block?
+                // This is determined by getting the Block location of the ItemFrame and then testing the location
+                // of the block on the attached face.
+                if (attachedBlock.getLocation().equals(originalBlock.getLocation())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

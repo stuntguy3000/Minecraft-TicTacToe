@@ -29,10 +29,9 @@ import com.stuntguy3000.minecraft.tictactoe.core.plugin.MinecraftPlugin;
 import com.stuntguy3000.minecraft.tictactoe.core.plugin.config.BoardsConfig;
 import com.stuntguy3000.minecraft.tictactoe.core.plugin.config.MainConfig;
 import com.stuntguy3000.minecraft.tictactoe.core.util.ActionBarUtil;
-import com.stuntguy3000.minecraft.tictactoe.event.PlayerActionEvents;
-import com.stuntguy3000.minecraft.tictactoe.event.PlayerBlockEvents;
-import com.stuntguy3000.minecraft.tictactoe.event.PlayerMoveEvents;
-import com.stuntguy3000.minecraft.tictactoe.event.PlayerStateEvents;
+import com.stuntguy3000.minecraft.tictactoe.event.BoardProtectionEvents;
+import com.stuntguy3000.minecraft.tictactoe.event.GameplayEvents;
+import com.stuntguy3000.minecraft.tictactoe.event.PlayerMovementEvents;
 import com.stuntguy3000.minecraft.tictactoe.handler.BoardHandler;
 import com.stuntguy3000.minecraft.tictactoe.handler.ConfigHandler;
 import com.stuntguy3000.minecraft.tictactoe.handler.GameHandler;
@@ -79,22 +78,24 @@ public final class PluginMain extends MinecraftPlugin {
 
     @Override
     public void registerCommands() {
-        Objects.requireNonNull(this.getCommand("tictactoe")).setExecutor(new TicTacToeCommand(this));
+        TicTacToeCommand ticTacToeCommand = new TicTacToeCommand(this);
+
+        Objects.requireNonNull(this.getCommand("tictactoe")).setExecutor(ticTacToeCommand);
+        Objects.requireNonNull(this.getCommand("tictactoe")).setTabCompleter(ticTacToeCommand);
     }
 
     @Override
     public void registerEvents() {
-        this.getServer().getPluginManager().registerEvents(new PlayerStateEvents(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerActionEvents(this), this);
+        this.getServer().getPluginManager().registerEvents(new GameplayEvents(this), this);
 
         if (MainConfig.getConfig().isBlockProtection()) {
             Bukkit.getLogger().log(Level.INFO, "[TicTacToe] Enabling block protection...");
-            this.getServer().getPluginManager().registerEvents(new PlayerBlockEvents(this), this);
+            this.getServer().getPluginManager().registerEvents(new BoardProtectionEvents(this), this);
         }
 
         if (MainConfig.getConfig().isPlayerMoveEvents()) {
             Bukkit.getLogger().log(Level.INFO, "[TicTacToe] Enabling player movement events...");
-            this.getServer().getPluginManager().registerEvents(new PlayerMoveEvents(this), this);
+            this.getServer().getPluginManager().registerEvents(new PlayerMovementEvents(this), this);
         }
     }
 

@@ -64,12 +64,12 @@ public class Game {
     /**
      * Change the gamestate of the game and perform the required game functions for the state change
      *
-     * @param gamestate Gamestate the new gamestate
+     * @param newGamestate Gamestate the new gamestate
      */
-    public void changeGamestate(Gamestate gamestate) {
-        this.gamestate = gamestate;
+    public void changeGamestate(Gamestate newGamestate) {
+        this.gamestate = newGamestate;
 
-        switch (gamestate) {
+        switch (newGamestate) {
             case NONE: {
                 // Reset Board (only valid on game start or Board destroy)
                 getBoard().fillBoardItems(new ItemStack(Material.AIR), false);
@@ -168,18 +168,22 @@ public class Game {
      * Send all players in the Game a formatted message
      *
      * @param message String the message to send
-     * @param format Object[] any format variables
+     * @param format  Object[] any format variables
      */
     public void sendPlayersMessage(String message, Object... format) {
-        Player player1 = Bukkit.getPlayer(getPlayer1Id());
-        Player player2 = Bukkit.getPlayer(getPlayer2Id());
+        if (getPlayer1Id() != null) {
+            Player player1 = Bukkit.getPlayer(getPlayer1Id());
 
-        if (player1 != null) {
-            Lang.sendMessage(player1, message, format);
+            if (player1 != null) {
+                Lang.sendMessage(player1, message, format);
+            }
         }
 
-        if (player2 != null) {
-            Lang.sendMessage(player2, message, format);
+        if (getPlayer2Id() != null) {
+            Player player2 = Bukkit.getPlayer(getPlayer2Id());
+            if (player2 != null) {
+                Lang.sendMessage(player2, message, format);
+            }
         }
     }
 
@@ -187,18 +191,21 @@ public class Game {
      * Send all players an action bar message
      *
      * @param message String the message to send
-     * @param format Object[] any format variables
+     * @param format  Object[] any format variables
      */
     public void sendPlayersActionBar(String message, Object... format) {
-        Player player1 = Bukkit.getPlayer(getPlayer1Id());
-        Player player2 = Bukkit.getPlayer(getPlayer2Id());
-
-        if (player1 != null) {
-            PluginMain.getInstance().getActionBarUtil().sendStickyActionBarMessage(player1, String.format(message, format));
+        if (getPlayer1Id() != null) {
+            Player player1 = Bukkit.getPlayer(getPlayer1Id());
+            if (player1 != null) {
+                PluginMain.getInstance().getActionBarUtil().sendStickyActionBarMessage(player1, String.format(message, format));
+            }
         }
 
-        if (player2 != null) {
-            PluginMain.getInstance().getActionBarUtil().sendStickyActionBarMessage(player2, String.format(message, format));
+        if (getPlayer2Id() != null) {
+            Player player2 = Bukkit.getPlayer(getPlayer2Id());
+            if (player2 != null) {
+                PluginMain.getInstance().getActionBarUtil().sendStickyActionBarMessage(player2, String.format(message, format));
+            }
         }
     }
 
@@ -225,7 +232,7 @@ public class Game {
     // Optimization opportunity - only test modified cells and not the whole board
 
     /**
-     * Used to find a three items in a row (indicating a win condition)
+     * Used to find three items in a row (indicating a win condition)
      *
      * @return List the list of BoardPositions containing the same three items in a row (or null if not found)
      */

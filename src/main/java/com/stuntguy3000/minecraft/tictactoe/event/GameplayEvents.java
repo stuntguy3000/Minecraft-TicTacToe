@@ -32,62 +32,25 @@ import com.stuntguy3000.minecraft.tictactoe.handler.GameHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.UUID;
 
 /**
- * Handles player action events.
+ * Handles events related to gameplay
  */
 @Data
 @AllArgsConstructor
-public class PlayerActionEvents implements Listener {
+public class GameplayEvents implements Listener {
     private final PluginMain plugin;
-
-    public PlayerActionEvents() {
-        this.plugin = PluginMain.getInstance();
-    }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onItemRemove(EntityDamageByEntityEvent event) {
-        Entity entity = event.getEntity();
-        Entity damager = event.getDamager();
-
-        if (entity instanceof ItemFrame && damager instanceof Player) {
-            // Is this a board item?
-            Block block = entity.getLocation().getBlock();
-            Board board = plugin.getBoardHandler().getBoardAtBlockLocation(new WorldVector(block.getLocation()));
-            if (board != null) {
-                // Cancel the event
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onDestroy(HangingBreakByEntityEvent event) {
-        Entity entity = event.getEntity();
-        Entity remover = event.getRemover();
-
-        if (entity instanceof ItemFrame && remover instanceof Player) {
-            // Is this a board item?
-            Block block = entity.getLocation().getBlock();
-            Board board = plugin.getBoardHandler().getBoardAtBlockLocation(new WorldVector(block.getLocation()));
-            if (board != null) {
-                // Cancel the event
-                event.setCancelled(true);
-            }
-        }
-    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onRightClick(PlayerInteractEntityEvent event) {
@@ -109,7 +72,6 @@ public class PlayerActionEvents implements Listener {
         if (boardHandler.isBoardCreator(id)) {
             // Cancel the event
             event.setCancelled(true);
-
             player.sendMessage("");
 
             // Try to make a board and see if it's valid
@@ -129,10 +91,10 @@ public class PlayerActionEvents implements Listener {
 
         // Is this a board item?
         Board board = boardHandler.getBoardAtBlockLocation(new WorldVector(block.getLocation()));
+
         if (board != null) {
             // Cancel the event
             event.setCancelled(true);
-
             GameHandler gameHandler = plugin.getGameHandler();
 
             // Begin to process the events
@@ -143,13 +105,9 @@ public class PlayerActionEvents implements Listener {
                 // Shouldn't happen, but just in case...
                 Lang.sendMessage(player, Lang.ERROR_GAME_JOIN_FAIL);
             } else if (playerGame == null) {
-                // Filter out players not in a game
-                if (boardGame.getGamestate() == Gamestate.WAITING) {
-                    // Join player to game
-                    gameHandler.tryAddToGame(player, boardGame);
-                } else {
-                    // Ignore this action
-                    return;
+                // Attempt to add the player to the game
+                if (!gameHandler.tryAddToGame(player, boardGame)) {
+                    Lang.sendMessage(player, Lang.ERROR_GAME_UNABLE_TO_JOIN);
                 }
             } else {
                 // Process item frame click from a player in a game
@@ -177,5 +135,15 @@ public class PlayerActionEvents implements Listener {
                 boardGame.playTurn(itemPosition);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onLeave(PlayerQuitEvent event) {
+        plugin.getGameHandler().removeFromGame(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDeath(PlayerDeathEvent event) {
+        plugin.getGameHandler().removeFromGame(event.getEntity());
     }
 }

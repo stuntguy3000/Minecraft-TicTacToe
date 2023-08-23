@@ -25,33 +25,38 @@
 package com.stuntguy3000.minecraft.tictactoe.event;
 
 import com.stuntguy3000.minecraft.tictactoe.PluginMain;
+import com.stuntguy3000.minecraft.tictactoe.core.objects.Board;
+import com.stuntguy3000.minecraft.tictactoe.core.objects.Game;
+import com.stuntguy3000.minecraft.tictactoe.core.plugin.config.MainConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
- * Handles player state events.
+ * Handles player movement events.
  */
 @Data
 @AllArgsConstructor
-public class PlayerStateEvents implements Listener {
+public class PlayerMovementEvents implements Listener {
     private final PluginMain plugin;
 
-    public PlayerStateEvents() {
-        this.plugin = PluginMain.getInstance();
-    }
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onLeave(PlayerQuitEvent event) {
-        plugin.getGameHandler().removeFromGame(event.getPlayer());
-    }
+    public void onMove(PlayerMoveEvent event) {
+        Location newLocation = event.getTo();
+        Player player = event.getPlayer();
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDeath(PlayerDeathEvent event) {
-        plugin.getGameHandler().removeFromGame(event.getEntity());
+        Game game = plugin.getGameHandler().getGameForPlayer(player);
+        if (game != null) {
+            Board closestBoard = plugin.getBoardHandler().getBoardClosestToLocation(newLocation, MainConfig.getConfig().getMaxPlayerBoardDistance());
+
+            if (closestBoard == null || closestBoard != game.getBoard()) {
+                plugin.getGameHandler().removeFromGame(player);
+            }
+        }
     }
 }

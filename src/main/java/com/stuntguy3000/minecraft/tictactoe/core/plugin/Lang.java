@@ -44,11 +44,11 @@ public class Lang {
     public static final String COMMAND_BOARD_LIST_TITLE = "§eBoard List (%d):";
     public static final String COMMAND_BOARD_LIST_VALUE = " §8- §b%d, %d, %d, §7(§e§7%s)";
 
-    public static final String EVENT_GAME_JOIN = "§a%s§r§a has joined this game.";
-    public static final String EVENT_GAME_LEAVE = "§c%s§r§c has left this game.";
-    public static final String EVENT_GAME_START = "§b§lThe game has begun!";
-    public static final String EVENT_GAME_WAITING = "§eWaiting for a second player to join...";
-    public static final String EVENT_GAME_WINNER = "§a§lGame Over!§r §7Winner: §e%s";
+    public static final String EVENT_GAME_JOIN = "§e%s§r§7 has joined this game.";
+    public static final String EVENT_GAME_LEAVE = "§e%s§r§7 has left this game.";
+    public static final String EVENT_GAME_START = "§b§lThe round has begun!";
+    public static final String EVENT_GAME_WAITING = "§7Waiting for a second player to join...";
+    public static final String EVENT_GAME_WINNER = "§a§lRound Over!§r §7Winner: §e%s";
 
     public static final String ACTIONBAR_GAME_STATUS = "§3TicTacToe §8| §7%s";
 
@@ -61,20 +61,21 @@ public class Lang {
     public static final String ERROR_BOARD_REMOVE = ERROR_PREFIX + "No nearby boards found!";
     public static final String ERROR_NOT_IN_GAME = ERROR_PREFIX + "You are not in an active game.";
     public static final String ERROR_GAME_JOIN_FAIL = ERROR_PREFIX + "You are unable to join this game!";
+
+    public static final String ERROR_GAME_UNABLE_TO_JOIN = ERROR_PREFIX + "This game is already in progress!";
     public static final String ERROR_COLOUR_SELECT_IN_USE = ERROR_PREFIX + "This colour is in use by the other player!";
     public static final String ERROR_NOT_YOUR_TURN = ERROR_PREFIX + "It is not your turn!";
 
     public static final String SUCCESS_PREFIX = "§aSuccess: ";
     public static final String SUCCESS_BOARD_CREATE = SUCCESS_PREFIX + "Board created, and ready to be used!";
     public static final String SUCCESS_BOARD_REMOVE_SUCCESS = SUCCESS_PREFIX + "Nearest board removed.";
-    public static final String SUCCESS_COLOUR_SELECTED = SUCCESS_PREFIX + "Your colour has been chosen.";
 
     public static final String GAMESTATE_NONE = "None";
     public static final String GAMESTATE_WAITING = "Waiting";
     public static final String GAMESTATE_INGAME = "Ingame";
     public static final String GAMESTATE_END = "End";
 
-    public static final String GAMESTATE_WAITING_DESCRIPTION = "Waiting for players...";
+    public static final String GAMESTATE_WAITING_DESCRIPTION = "Waiting for another player...";
     public static final String GAMESTATE_INGAME_DESCRIPTION = "Current Turn: §e%s";
     public static final String GAMESTATE_END_DESCRIPTION = "Winner: §e%s";
 
@@ -85,7 +86,7 @@ public class Lang {
      * Send a message to a CommandSender.
      * If sender is a Player, the message will be sent with the plugin's message prefix.
      *
-     * @param sender CommandSender the entity to send the message to.
+     * @param sender  CommandSender the entity to send the message to.
      * @param message String the message to send.
      */
     public static void sendMessage(CommandSender sender, String message) {
@@ -95,13 +96,14 @@ public class Lang {
             sender.sendMessage(ChatColor.stripColor(message));
         }
     }
+
     /**
      * Send a formatted message to a CommandSender.
      * If sender is a Player, the message will be sent with the plugin's message prefix.
      *
-     * @param sender CommandSender the entity to send the message to.
+     * @param sender  CommandSender the entity to send the message to.
      * @param message String the message to send.
-     * @param format Object[] format objects
+     * @param format  Object[] format objects
      */
     public static void sendMessage(CommandSender sender, String message, Object... format) {
         sendMessage(sender, String.format(message, format));
